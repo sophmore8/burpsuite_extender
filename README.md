@@ -5,3 +5,5 @@ burpsuite插件搜集
 采用analyzedRequest.getBodyOffset():来获取post数据，牛逼
 #提交git
 先commit 后push
+#ssrf案例参考
+http://www.freebuf.com/articles/web/20407.html
